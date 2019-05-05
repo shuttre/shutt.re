@@ -1,0 +1,1 @@
+const spaConfigApiUrl = "http://localhost:5000";
