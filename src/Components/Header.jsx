@@ -1,26 +1,27 @@
 import React from "react";
 import { withRouter } from 'react-router'
 
-import Drawer from "@material-ui/core/Drawer";
-import { withStyles } from "@material-ui/core/styles";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import IconButton from "@material-ui/core/IconButton";
-import Divider from "@material-ui/core/Divider";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
+import Drawer from "@material-ui/core/Drawer/index";
+import { withStyles } from "@material-ui/core/styles/index";
+import AppBar from "@material-ui/core/AppBar/index";
+import Toolbar from "@material-ui/core/Toolbar/index";
+import Typography from "@material-ui/core/Typography/index";
+import IconButton from "@material-ui/core/IconButton/index";
+import Divider from "@material-ui/core/Divider/index";
+import ListItem from "@material-ui/core/ListItem/index";
+import ListItemIcon from "@material-ui/core/ListItemIcon/index";
+import ListItemText from "@material-ui/core/ListItemText/index";
 
-import MenuIcon from "@material-ui/icons/Menu";
-import HomeIcon from "@material-ui/icons/Home";
-import PhotoLibraryIcon from "@material-ui/icons/PhotoLibrary";
-import PeopleIcon from "@material-ui/icons/People";
-import MeetingRoomIcon from "@material-ui/icons/MeetingRoom";
-import NoMeetingRoomIcon from "@material-ui/icons/NoMeetingRoom";
-import SdStorageIcon from "@material-ui/icons/SdStorage";
+import IconMenu from "@material-ui/icons/Menu";
+import IconHome from "@material-ui/icons/Home";
+import IconPhotoLibrary from "@material-ui/icons/PhotoLibrary";
+import IconPeople from "@material-ui/icons/People";
+import IconMeetingRoom from "@material-ui/icons/MeetingRoom";
+import IconNoMeetingRoom from "@material-ui/icons/NoMeetingRoom";
+import IconSdStorage from "@material-ui/icons/SdStorage";
+import IconSelected from "@material-ui/icons/CheckBoxRounded";
 
-import Oidc from "./Oidc";
+import Oidc from "../Libs/Oidc";
 
 const styles = {
     root: {
@@ -70,7 +71,7 @@ class Header extends React.Component {
         let loginItem = (
             <ListItem button onClick={e => this.oidc.logout()}>
                 <ListItemIcon>
-                    <NoMeetingRoomIcon />
+                    <IconNoMeetingRoom />
                 </ListItemIcon>
                 <ListItemText primary="Logout" />
             </ListItem>
@@ -80,7 +81,7 @@ class Header extends React.Component {
             loginItem = (
                 <ListItem button onClick={async (e) => await this.oidc.authenticateRedirect()}>
                     <ListItemIcon>
-                        <MeetingRoomIcon />
+                        <IconMeetingRoom />
                     </ListItemIcon>
                     <ListItemText primary="Login" />
                 </ListItem>
@@ -91,27 +92,33 @@ class Header extends React.Component {
             <div>
                 <ListItem button onClick={e => this.handleClick("/", e)}>
                     <ListItemIcon>
-                        <HomeIcon />
+                        <IconHome />
                     </ListItemIcon>
                     <ListItemText primary="Home" />
                 </ListItem>
                 <ListItem button onClick={e => this.handleClick("/albums", e)}>
                     <ListItemIcon>
-                        <PhotoLibraryIcon />
+                        <IconPhotoLibrary />
                     </ListItemIcon>
                     <ListItemText primary="Albums" />
                 </ListItem>
                 <ListItem button onClick={e => this.handleClick("/browse", e)}>
                     <ListItemIcon>
-                        <SdStorageIcon />
+                        <IconSdStorage />
                     </ListItemIcon>
                     <ListItemText primary="Browse storage" />
+                </ListItem>
+                <ListItem button onClick={e => this.handleClick("/selected", e)}>
+                    <ListItemIcon>
+                        <IconSelected />
+                    </ListItemIcon>
+                    <ListItemText primary="Selected images" />
                 </ListItem>
                 <Divider />
                 {loginItem}
                 <ListItem button onClick={e => this.handleClick("/about", e)}>
                     <ListItemIcon>
-                        <PeopleIcon />
+                        <IconPeople />
                     </ListItemIcon>
                     <ListItemText primary="About" />
                 </ListItem>
@@ -142,14 +149,14 @@ class Header extends React.Component {
                                 color="inherit"
                                 aria-label="Menu"
                             >
-                                <MenuIcon />
+                                <IconMenu />
                             </IconButton>
                             <Typography
                                 variant="title"
                                 color="inherit"
                                 className={classes.flex}
                             >
-                                News
+                                Shutt.re
                             </Typography>
                         </Toolbar>
                     </AppBar>

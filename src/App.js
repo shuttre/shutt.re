@@ -2,9 +2,8 @@ import React, { Component } from 'react';
 
 import CssBaseline from '@material-ui/core/CssBaseline';
 
-import './App.css';
-import Header from "./Header";
-import Main from "./Main";
+import Header from "./Components/Header";
+import Main from "./Components/Main";
 
 class App extends Component {
   render() {
@@ -12,7 +11,6 @@ class App extends Component {
         <div>
           <CssBaseline />
           <Header />
-          <br />
           <Main />
         </div>
     );

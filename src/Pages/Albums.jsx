@@ -1,10 +1,9 @@
 import React from 'react';
 import { Link, withRouter } from 'react-router-dom';
-import { withStyles } from "@material-ui/core/styles";
-import CircularProgress from '@material-ui/core/CircularProgress';
+import { withStyles } from "@material-ui/core/styles/index";
+import CircularProgress from '@material-ui/core/CircularProgress/index';
 
-import './Albums.css';
-import ShuttreApiClient from "./ShuttreApiClient";
+import ShuttreApiClient from "../Libs/ShuttreApiClient";
 
 class Albums extends React.Component {
 

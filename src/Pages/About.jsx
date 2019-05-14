@@ -1,5 +1,5 @@
 import React from 'react';
-import Oidc from "./Oidc";
+import Oidc from "../Libs/Oidc";
 
 class About extends React.Component {
 

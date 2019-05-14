@@ -1,12 +1,14 @@
 import React from 'react';
 import { Route, Switch, withRouter } from "react-router-dom";
 
-import './Main.css';
-import Oidc from "./Oidc";
-import Browse from "./Browse";
-import About from "./About";
-import Albums from "./Albums";
-import Album from "./Album";
+import Oidc from "../Libs/Oidc";
+import Browse from "../Pages/Browse";
+import About from "../Pages/About";
+import Albums from "../Pages/Albums";
+import Album from "../Pages/Album";
+
+import classes from "../Styles/Main.module.css";
+import SelectedImages from "../Pages/SelectedImages";
 
 class Main extends React.Component {
 
@@ -27,7 +29,7 @@ class Main extends React.Component {
 
     render() {
         return (
-            <div className="App">
+            <div className={classes.app}>
                 <Switch>
                     {/*<Route exact path="/" render={(props) => <Home {...props} />} />*/}
                     <Route exact path="/" render={() => <div>Home</div>} />
@@ -37,6 +39,7 @@ class Main extends React.Component {
                     <Route path="/albums" render={(props) => <Albums {...props} />} />
                     <Route path="/album/:albumId" render={(props) => <Album {...props} />} />
                     <Route path="/browse" render={(props) => <Browse {...props} />} />
+                    <Route path="/selected" render={(props) => <SelectedImages {...props} />} />
                     <Route path="/about" render={(props) => <About {...props} />} />
                     <Route render={() => <div>Page not found!</div>} />
                 </Switch>
