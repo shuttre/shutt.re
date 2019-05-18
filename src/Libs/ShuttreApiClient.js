@@ -3,7 +3,18 @@
 import Utils from "./Utils"
 import Oidc from "./Oidc";
 
+// TODO: Check what happens when method returns null and fetch is not aborted, for all methods.
+
 class ShuttreApiClient {
+
+    static AlbumImageSize = {
+        icon: "icon",
+        small: "small",
+        medium: "medium",
+        large: "large",
+        fullsize: "fullsize",
+        original: "original"
+    };
 
     constructor() {
         this.access_token = Oidc.getAccessToken();
@@ -248,61 +259,50 @@ class ShuttreApiClient {
         }
     }
 
-    async fetchImages(albumId) {
+    async fetchAlbumImages(albumId, signal) {
         let theUrl = this.apiUrl(`/image/list/${albumId}`);
 
-        try {
-            let response = await fetch(theUrl, {
-                headers: new Headers({
-                    "Accept": "application/json",
-                    "Authorization": `Bearer ${this.access_token}`
-                })
-            });
+        let response = await fetch(theUrl, {
+            signal: signal,
+            headers: new Headers({
+                "Accept": "application/json",
+                "Authorization": `Bearer ${this.access_token}`
+            })
+        });
 
-            if (response.status === 404) { // STATUS_CODE_NOT_FOUND
-                return null;
-            }
-
-            if (response.status === 204) { // STATUS_CODE_NO_CONTENT
-                return [];
-            }
-
-            return await response.json()
-        }
-        catch (error) {
-            console.error("Error in fetchImages(): " + error);
+        if (response.status === 404) { // STATUS_CODE_NOT_FOUND
             return null;
         }
+
+        if (response.status === 204) { // STATUS_CODE_NO_CONTENT
+            return [];
+        }
+
+        return await response.json()
     }
 
-    async fetchAlbumImage(albumId, imageId) {
-        let theUrl = this.apiUrl(`/image/${albumId}/${imageId}?size=icon`);
-        try {
+    async fetchAlbumImage(albumId, imageId, size, signal) {
+        let theUrl = this.apiUrl(`/image/${albumId}/${imageId}?size=${size}`);
+        let response = await fetch(theUrl, {
+            signal: signal,
+            headers: new Headers({
+                "Accept": "application/json",
+                "Authorization": `Bearer ${this.access_token}`
+            })
+        });
 
-            let response = await fetch(theUrl, {
-                headers: new Headers({
-                    "Accept": "application/json",
-                    "Authorization": `Bearer ${this.access_token}`
-                })
-            });
-
-            if (response.status === 404) { // STATUS_CODE_NOT_FOUND
-                return null;
-            }
-
-            let imageBlob = await response.blob();
-            let width = response.headers.get("X-Width");
-            let height = response.headers.get("X-Height");
-            return {
-                width: width,
-                height: height,
-                dataUrl: URL.createObjectURL(imageBlob)
-            };
-        }
-        catch (error) {
-            console.error("Error in fetchBrowsableImage(): " + error);
+        if (response.status === 404) { // STATUS_CODE_NOT_FOUND
             return null;
         }
+
+        let imageBlob = await response.blob();
+        let width = response.headers.get("X-Width");
+        let height = response.headers.get("X-Height");
+        return {
+            width: width,
+            height: height,
+            dataUrl: URL.createObjectURL(imageBlob)
+        };
     }
 
     getCachePerUserParameter() {

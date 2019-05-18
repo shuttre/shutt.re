@@ -14,6 +14,11 @@ import classes from "../Styles/ImageModal.module.css";
 
 class ImageModal extends React.Component {
 
+    static ImageType = {
+        browsable: 1,
+        album: 2
+    };
+
     constructor(props) {
         super(props);
         this.htmlIds = {
@@ -68,7 +73,12 @@ class ImageModal extends React.Component {
 
     toggleSelect(e) {
         e.stopPropagation();
-        this.selectedImagesHelper.toggleSelectBrowsableImage(this.props.path);
+        if (this.props.type === ImageModal.ImageType.album) {
+            this.selectedImagesHelper.toggleSelectAlbumImage(this.props.albumId, this.props.imageId);
+        }
+        else {
+            this.selectedImagesHelper.toggleSelectBrowsableImage(this.props.path);
+        }
         this.forceUpdate();
     }
 
@@ -150,7 +160,16 @@ class ImageModal extends React.Component {
     }
 
     getSelectIcon() {
-        if (this.selectedImagesHelper.isBrowsableImageSelected(this.props.path)) {
+
+        let isSelected;
+        if (this.props.type === ImageModal.ImageType.album) {
+            isSelected = this.selectedImagesHelper.isAlbumImageSelected(this.props.albumId, this.props.imageId);
+        }
+        else {
+            isSelected = this.selectedImagesHelper.isBrowsableImageSelected(this.props.path);
+        }
+
+        if (isSelected) {
             return <div onClick={(e) => this.toggleSelect(e)} className={classes.modalToggleSelect}>
                 <IconSelectedYes style={{width: "100%", height: "100%"}}/>
             </div>;

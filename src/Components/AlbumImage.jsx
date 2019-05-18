@@ -21,15 +21,47 @@ class AlbumImage extends React.Component {
             height: null,
             image: AlbumImage.LOADING
         };
+        this.abortController = null;
         this.api = new ShuttreApiClient();
     }
 
     componentDidMount() {
+        // noinspection JSIgnoredPromiseFromCall
         this.fetchImageAndUpdateState();
     }
 
+    componentWillUnmount() {
+        this.abortFetchImages();
+    }
+
+
+
+    abortFetchImages() {
+        if (this.abortController != null) { this.abortController.abort(); }
+    }
+
     async fetchImageAndUpdateState() {
-        let {width, height, dataUrl} = await this.api.fetchAlbumImage(this.albumId, this.imageId);
+        this.abortFetchImages();
+        this.abortController = new window.AbortController();
+
+        let response;
+        try {
+            response = await this.api.fetchAlbumImage(
+                this.albumId,
+                this.imageId,
+                ShuttreApiClient.AlbumImageSize.icon,
+                this.abortController.signal);
+        }
+        catch (e) {
+            if (e.name !== 'AbortError') {
+                console.error("Error in api.fetchAlbumImage(): " + e);
+                alert("Failed to fetch image");
+            }
+            return;
+        }
+
+        let {width, height, dataUrl} = response;
+
         if (dataUrl == null) {
             alert("Failed to fetch image");
             this.setState({ image: AlbumImage.LOADING });

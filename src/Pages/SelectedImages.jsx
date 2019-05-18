@@ -52,7 +52,7 @@ class About extends React.Component {
         return <AddToAlbumDialog
             open={this.state.showAddToAlbumDialog}
             onClose={() => this.handleCloseAddToAlbumDialog()}
-            browsableImagePaths={this.selectedImagesHelper.getActiveSelectedBrowsableImagePaths()}
+            browsableImagePaths={this.selectedImagesHelper.getSelectedBrowsableImages(true)}
             onError={(e) => alert("Failed to add images to queue.")}
             onQueued={(imageQueue) => this.handleImagesQueued(imageQueue)}
     />;
@@ -60,57 +60,117 @@ class About extends React.Component {
 
     render() {
 
-        let sbi = this.selectedImagesHelper.getSelectedBrowsableImages();
+        this.selectedImagesHelper.load();
 
-        let pathRows = this.getPathRows(sbi);
+        let sai = this.selectedImagesHelper.getSelectedAlbumImages(false);
+        let sbi = this.selectedImagesHelper.getSelectedBrowsableImages(false);
+
+        let pathRowsA = sai.map(x => this.getPathRowA(x[0], x[1]));
+        let pathRowsB = sbi.map(path => this.getPathRowB(path));
 
         let addToAlbumDialog = this.getAddToAlbumDialog();
+
+        let headingA;
+        if (pathRowsA.length !== 0) {
+            headingA = <p>Functionality to add the following images to an album is not implemented:</p>;
+        }
 
         return  <>
                     <div>
                         <Button onClick={e => this.clear(e)}>Clear</Button>&nbsp;
                         <Button onClick={() => this.addSelectedImagesToAlbum()}>Add to album</Button><br />
                         <ul>
-                            {pathRows}
+                            {pathRowsB}
+                            {headingA}
+                            {pathRowsA}
                         </ul>
                     </div>
                     {addToAlbumDialog}
                 </>;
     }
 
-    handlePathClick(e, path) {
+    static handleAlbumImageClick(e, albumId, imageId) {
         e.stopPropagation();
-        alert("View image: " + path);
+        alert("View (album) image. albumId: " + albumId + ", imageId: " + imageId);
     }
 
-    handleRemove(e, path) {
+    static handlePathImageClick(e, path) {
+        e.stopPropagation();
+        alert("View (path) image: " + path);
+    }
+
+    handleRemoveA(e, albumId, imageId) {
+        e.stopPropagation();
+        this.selectedImagesHelper.removeSelectedAlbumImage(albumId, imageId);
+        this.forceUpdate();
+    }
+
+    handleRemoveB(e, path) {
         e.stopPropagation();
         this.selectedImagesHelper.removeSelectedBrowsableImage(path);
         this.forceUpdate();
     }
 
-    handleSelect(e, path) {
+    handleSelectA(e, albumId, imageId) {
+        e.stopPropagation();
+        this.selectedImagesHelper.toggleSelectAlbumImage(albumId, imageId);
+        this.forceUpdate();
+    }
+
+    handleSelectB(e, path) {
         e.stopPropagation();
         this.selectedImagesHelper.toggleSelectBrowsableImage(path);
         this.forceUpdate();
     }
 
-    getSelectedIcon(path) {
-        if (this.selectedImagesHelper.isBrowsableImageSelected(path)) {
-            return <IconSelectedYes onClick={e => this.handleSelect(e, path)} />;
+    getSelectedIconA(albumId, imageId) {
+        if (this.selectedImagesHelper.isAlbumImageSelected(albumId, imageId)) {
+            return <IconSelectedYes onClick={e => this.handleSelectA(e, albumId, imageId)} />;
         }
         else {
-            return <IconSelectedNo onClick={e => this.handleSelect(e, path)} />;
+            return <IconSelectedNo onClick={e => this.handleSelectA(e, albumId, imageId)} />;
         }
     }
 
-    getPathRow(path) {
+    getSelectedIconB(path) {
+        if (this.selectedImagesHelper.isBrowsableImageSelected(path)) {
+            return <IconSelectedYes onClick={e => this.handleSelectB(e, path)} />;
+        }
+        else {
+            return <IconSelectedNo onClick={e => this.handleSelectB(e, path)} />;
+        }
+    }
 
-        let selectedIcon = this.getSelectedIcon(path);
+    getPathRowA(albumId, imageId) {
 
-        return <ListItem key={path} button onClick={e => this.handlePathClick(e, path)}>
+        let selectedIcon = this.getSelectedIconA(albumId, imageId);
+        let key = this.selectedImagesHelper.getKeyForAlbumImage(albumId, imageId);
+
+        return <ListItem
+            disabled={true}
+            key={key}
+            button
+            onClick={e => About.handleAlbumImageClick(e, albumId, imageId)}>
             <ListItemIcon>
-                <IconRemove onClick={e => this.handleRemove(e, path)} />
+                <IconRemove onClick={e => this.handleRemoveA(e, albumId, imageId)} />
+            </ListItemIcon>
+            <ListItemIcon>
+                {selectedIcon}
+            </ListItemIcon>
+            <ListItemIcon>
+                <IconImage />
+            </ListItemIcon>
+            <ListItemText primary={key} />
+        </ListItem>;
+    }
+
+    getPathRowB(path) {
+
+        let selectedIcon = this.getSelectedIconB(path);
+
+        return <ListItem key={path} button onClick={e => About.handlePathImageClick(e, path)}>
+            <ListItemIcon>
+                <IconRemove onClick={e => this.handleRemoveB(e, path)} />
             </ListItemIcon>
             <ListItemIcon>
                 {selectedIcon}
@@ -122,9 +182,6 @@ class About extends React.Component {
         </ListItem>;
     }
 
-    getPathRows(sbi) {
-        return Object.keys(sbi).map(path => this.getPathRow(path));
-    }
 }
 
 export default About;

@@ -39,18 +39,22 @@ export default class AddToAlbumDialog extends React.Component {
     }
 
     componentWillUnmount() {
-        this.abortFetch();
+        this.abortFetchAlbums();
+        this.abortFetchAddQueue()
     }
 
 
 
-    abortFetch() {
+    abortFetchAlbums() {
         if (this.abortControllerFetchAlbums != null) { this.abortControllerFetchAlbums.abort(); }
+    }
+
+    abortFetchAddQueue() {
         if (this.abortControllerAddToQueue != null) { this.abortControllerAddToQueue.abort(); }
     }
 
     async fetchAlbums() {
-        this.abortFetch();
+        this.abortFetchAlbums();
         this.abortControllerFetchAlbums = new window.AbortController();
 
         let albums = null;
@@ -69,7 +73,7 @@ export default class AddToAlbumDialog extends React.Component {
     }
 
     async addToAlbum() {
-        this.abortFetch();
+        this.abortFetchAddQueue();
         this.abortControllerAddToQueue = new window.AbortController();
 
         let imageQueue = null;
@@ -119,7 +123,8 @@ export default class AddToAlbumDialog extends React.Component {
 
 
     handleCloseDialog() {
-        this.abortFetch();
+        this.abortFetchAlbums();
+        this.abortFetchAddQueue()
         this.setState({
             albumToAddTo: null,
         });

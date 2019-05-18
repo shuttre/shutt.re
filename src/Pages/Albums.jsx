@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link, withRouter } from 'react-router-dom';
-import { withStyles } from "@material-ui/core/styles/index";
 import CircularProgress from '@material-ui/core/CircularProgress/index';
 
 import ShuttreApiClient from "../Libs/ShuttreApiClient";
@@ -18,6 +17,7 @@ class Albums extends React.Component {
     }
 
     componentDidMount() {
+        // noinspection JSIgnoredPromiseFromCall
         this.fetchAlbumsAndUpdateState()
     }
 
@@ -48,8 +48,15 @@ class Albums extends React.Component {
     }
 
     getLoadingToRender() {
-        const { classes } = this.props;
-        return <CircularProgress className={classes.modalProgress} size={50} />
+        const style = {
+            position: "absolute",
+            margin: "auto",
+            top: 0,
+            left: 0,
+            bottom: 0,
+            right: 0
+        };
+        return <CircularProgress style={style} size={50} />
     }
 
     getAlbumsToRender() {
@@ -73,16 +80,4 @@ class Albums extends React.Component {
     }
 }
 
-const styles = theme => ({
-    modalProgress: {
-        // margin: theme.spacing.unit * 2,
-        position: "absolute",
-        margin: "auto",
-        top: 0,
-        left: 0,
-        bottom: 0,
-        right: 0
-    }
-});
-
-export default withRouter(withStyles(styles)(Albums));
+export default withRouter(Albums);

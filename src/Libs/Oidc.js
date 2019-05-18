@@ -127,6 +127,7 @@ class Oidc {
         let code = url.searchParams.get("code");
 
         if (code == null || code.length === 0) {
+            console.error("code was null or empty");
             this.loginError();
         }
 
@@ -135,6 +136,7 @@ class Oidc {
         pkce = JSON.parse(pkce);
 
         if (pkce == null) {
+            console.error("pkce was null");
             this.loginError();
         }
 
@@ -156,10 +158,14 @@ class Oidc {
             });
 
             if (response.status !== 200) {
+                console.debug("fetchTokensAndLogin(): response.status !== 200");
                 return false;
             }
 
             let token_response = await response.json();
+
+            console.debug("token_response");
+            console.debug(token_response);
 
             let r = this.saveTokens(token_response);
 

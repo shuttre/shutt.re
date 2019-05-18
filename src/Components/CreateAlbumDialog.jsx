@@ -22,15 +22,15 @@ export default class CreateAlbumDialog extends React.Component {
     }
 
     componentWillUnmount() {
-        this.abortFetch();
+        this.abortFetchCreateAlbum();
     }
 
-    abortFetch() {
+    abortFetchCreateAlbum() {
         if (this.abortController != null) { this.abortController.abort(); }
     }
 
     async createAlbum() {
-        this.abortFetch();
+        this.abortFetchCreateAlbum();
         this.abortController = new window.AbortController();
 
         let newAlbum = null;
@@ -53,7 +53,7 @@ export default class CreateAlbumDialog extends React.Component {
     }
 
     handleCloseDialog() {
-        this.abortFetch();
+        this.abortFetchCreateAlbum();
         this.setState({
             newAlbumName: null,
             waitingForResponse: false

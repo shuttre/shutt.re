@@ -2,7 +2,6 @@ import React from "react";
 import { withRouter } from 'react-router'
 
 import Drawer from "@material-ui/core/Drawer/index";
-import { withStyles } from "@material-ui/core/styles/index";
 import AppBar from "@material-ui/core/AppBar/index";
 import Toolbar from "@material-ui/core/Toolbar/index";
 import Typography from "@material-ui/core/Typography/index";
@@ -14,33 +13,17 @@ import ListItemText from "@material-ui/core/ListItemText/index";
 
 import IconMenu from "@material-ui/icons/Menu";
 import IconHome from "@material-ui/icons/Home";
-import IconPhotoLibrary from "@material-ui/icons/PhotoLibrary";
-import IconPeople from "@material-ui/icons/People";
-import IconMeetingRoom from "@material-ui/icons/MeetingRoom";
-import IconNoMeetingRoom from "@material-ui/icons/NoMeetingRoom";
-import IconSdStorage from "@material-ui/icons/SdStorage";
+import IconAlbums from "@material-ui/icons/Photo";
+import IconAbout from "@material-ui/icons/People";
+import IconLogin from "@material-ui/icons/MeetingRoom";
+import IconLogout from "@material-ui/icons/NoMeetingRoom";
+import IconBrowse from "@material-ui/icons/Folder";
 import IconSelected from "@material-ui/icons/CheckBoxRounded";
+import IconSettings from "@material-ui/icons/Settings";
+
+import classes from "../Styles/Header.module.css";
 
 import Oidc from "../Libs/Oidc";
-
-const styles = {
-    root: {
-        flexGrow: 1
-    },
-    flex: {
-        flexGrow: 1
-    },
-    menuButton: {
-        marginLeft: -12,
-        marginRight: 20
-    },
-    list: {
-        width: 250
-    },
-    fullList: {
-        width: "auto"
-    }
-};
 
 class Header extends React.Component {
     constructor(props) {
@@ -62,8 +45,11 @@ class Header extends React.Component {
     }
 
     handleClick(to, e) {
-        e.preventDefault();
+        e.stopPropagation();
         this.props.history.push(to);
+        this.setState({
+            open: false
+        });
     }
 
     getMenuContent() {
@@ -71,7 +57,7 @@ class Header extends React.Component {
         let loginItem = (
             <ListItem button onClick={e => this.oidc.logout()}>
                 <ListItemIcon>
-                    <IconNoMeetingRoom />
+                    <IconLogout />
                 </ListItemIcon>
                 <ListItemText primary="Logout" />
             </ListItem>
@@ -81,7 +67,7 @@ class Header extends React.Component {
             loginItem = (
                 <ListItem button onClick={async (e) => await this.oidc.authenticateRedirect()}>
                     <ListItemIcon>
-                        <IconMeetingRoom />
+                        <IconLogin />
                     </ListItemIcon>
                     <ListItemText primary="Login" />
                 </ListItem>
@@ -98,13 +84,19 @@ class Header extends React.Component {
                 </ListItem>
                 <ListItem button onClick={e => this.handleClick("/albums", e)}>
                     <ListItemIcon>
-                        <IconPhotoLibrary />
+                        <IconAlbums />
                     </ListItemIcon>
                     <ListItemText primary="Albums" />
+                    <ListItemIcon>
+                        <IconSettings
+                            className={classes.settingsIcon}
+                            onClick={e => this.handleClick("/manage/albums", e)}
+                        />
+                    </ListItemIcon>
                 </ListItem>
                 <ListItem button onClick={e => this.handleClick("/browse", e)}>
                     <ListItemIcon>
-                        <IconSdStorage />
+                        <IconBrowse />
                     </ListItemIcon>
                     <ListItemText primary="Browse storage" />
                 </ListItem>
@@ -118,7 +110,7 @@ class Header extends React.Component {
                 {loginItem}
                 <ListItem button onClick={e => this.handleClick("/about", e)}>
                     <ListItemIcon>
-                        <IconPeople />
+                        <IconAbout />
                     </ListItemIcon>
                     <ListItemText primary="About" />
                 </ListItem>
@@ -127,7 +119,6 @@ class Header extends React.Component {
     }
 
     render() {
-        let { classes } = this.props;
         let sideDrawerContent = this.getMenuContent();
         return (
             <div>
@@ -166,6 +157,4 @@ class Header extends React.Component {
     }
 }
 
-// const HeaderWithPapi = withPapi(Header);
-
-export default withRouter(withStyles(styles)(Header));
+export default withRouter(Header);

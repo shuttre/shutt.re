@@ -4,7 +4,6 @@ import { withRouter } from 'react-router-dom';
 import ListItem from "@material-ui/core/ListItem/index";
 import ListItemIcon from "@material-ui/core/ListItemIcon/index";
 import ListItemText from "@material-ui/core/ListItemText/index";
-import { withStyles } from "@material-ui/core/styles/index";
 import CircularProgress from '@material-ui/core/CircularProgress/index';
 
 import IconFolder from "@material-ui/icons/Folder";
@@ -25,12 +24,12 @@ class Browse extends React.Component {
 
     constructor(props) {
         super(props);
-        this.api = new ShuttreApiClient();
         this.state = {
             iNodes: Browse.LOADING,
             hash: null,
             modalImgSrc: Browse.LOADING
         };
+        this.api = new ShuttreApiClient();
         this.abortControllerImg = null;
         this.abortControllerDir = null;
         this.selectedImagesHelper = new SelectedImagesHelper();
@@ -53,13 +52,11 @@ class Browse extends React.Component {
     }
 
     componentWillUnmount() {
-        if (this.abortControllerImg != null) {
-            this.abortControllerImg.abort();
-        }
-        if (this.abortControllerDir != null) {
-            this.abortControllerDir.abort();
-        }
+        this.abortFetchDir();
+        this.abortFetchImg();
     }
+
+
 
     shouldShowModal() {
         return this.props.location.hash != null && this.props.location.hash !== "";
@@ -106,16 +103,28 @@ class Browse extends React.Component {
         return virtualPath;
     }
 
-    async fetchImageAndUpdateModal() {
+
+
+    abortFetchImg() {
         if (this.abortControllerImg != null) {
             this.abortControllerImg.abort();
         }
+    }
+
+    abortFetchDir() {
+        if (this.abortControllerDir != null) {
+            this.abortControllerDir.abort();
+        }
+    }
+
+    async fetchImageAndUpdateModal() {
+        this.abortFetchImg();
         this.abortControllerImg = new window.AbortController();
 
 
         let virtualPath = this.getCurrentVirtualPath(true);
+
         let imgDataObject;
-        
         try {
             imgDataObject = await this.api.fetchBrowsableImage(virtualPath, this.abortControllerImg.signal);
         }
@@ -137,10 +146,7 @@ class Browse extends React.Component {
     }
 
     async fetchDirectoryContent() {
-
-        if (this.abortControllerDir != null) {
-            this.abortControllerDir.abort();
-        }
+        this.abortFetchDir();
         this.abortControllerDir = new window.AbortController();
 
         let virtualPath = this.getCurrentVirtualPath(false);
@@ -167,7 +173,9 @@ class Browse extends React.Component {
         });
     }
 
-    handleClose() {
+
+
+    handleCloseModal() {
         this.props.history.push({
             hash: null
         });
@@ -301,8 +309,15 @@ class Browse extends React.Component {
     }
 
     getLoadingDir() {
-        const { classes } = this.props;
-        return <CircularProgress className={classes.modalProgress} size={50} />
+        const style = {
+            position: "absolute",
+            margin: "auto",
+            top: 0,
+            left: 0,
+            bottom: 0,
+            right: 0
+        };
+        return <CircularProgress style={style} size={50} />
     }
 
     getModal() {
@@ -311,11 +326,12 @@ class Browse extends React.Component {
         let path = this.getCurrentVirtualPath(true);
 
         return <ImageModal
+            type={ImageModal.ImageType.browsable}
             loading={loading}
             imageSrc={loading ? null : this.state.modalImgSrc}
             path={path}
             open={open}
-            onClose={() => this.handleClose()}
+            onClose={() => this.handleCloseModal()}
             onPrevAction={() => this.handleGotoNext(true)}
             onNextAction={() => this.handleGotoNext()} />;
 
@@ -344,15 +360,4 @@ class Browse extends React.Component {
     }
 }
 
-const styles = () => ({
-    modalProgress: {
-        position: "absolute",
-        margin: "auto",
-        top: 0,
-        left: 0,
-        bottom: 0,
-        right: 0
-    }
-});
-
-export default withRouter(withStyles(styles)(Browse));
+export default withRouter(Browse);

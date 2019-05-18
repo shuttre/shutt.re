@@ -14,7 +14,7 @@
     opacity: 0.3;
 }
 .modalPrevArrow:hover {
-    opacity: 0.7;
+    opacity: 1;
 }
 
 .modalNextArrow {
@@ -33,7 +33,7 @@
     opacity: 0.3;
 }
 .modalNextArrow:hover {
-    opacity: 0.7;
+    opacity: 1;
 }
 
 .modalToggleSelect {
@@ -47,7 +47,7 @@
     opacity: 0.3;
 }
 .modalToggleSelect:hover {
-    opacity: 0.7;
+    opacity: 1;
 }
 
 .modalCloseX {
@@ -62,9 +62,8 @@
     opacity: 0.3;
 }
 .modalCloseX:hover {
-    opacity: 0.7;
+    opacity: 1;
 }
-
 
 
 .modalTopBar {
@@ -77,6 +76,10 @@
     color: #000000;
     background: rgba(255, 255, 255, 0.7);
 }
+.modalTopBar:hover {
+    background: rgba(255, 255, 255, 1);
+}
+
 
 
 .modalImg {

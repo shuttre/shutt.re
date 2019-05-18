@@ -9,6 +9,7 @@ import Album from "../Pages/Album";
 
 import classes from "../Styles/Main.module.css";
 import SelectedImages from "../Pages/SelectedImages";
+import ManageAlbums from "../Pages/Manage/ManageAlbums";
 
 class Main extends React.Component {
 
@@ -41,6 +42,9 @@ class Main extends React.Component {
                     <Route path="/browse" render={(props) => <Browse {...props} />} />
                     <Route path="/selected" render={(props) => <SelectedImages {...props} />} />
                     <Route path="/about" render={(props) => <About {...props} />} />
+
+                    <Route path="/manage/albums" render={(props) => <ManageAlbums {...props} />} />
+
                     <Route render={() => <div>Page not found!</div>} />
                 </Switch>
             </div>
