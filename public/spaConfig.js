@@ -1,1 +1,1 @@
-const spaConfigApiUrl = "http://localhost:5000";
+const shuttreApiBaseUrl = "http://localhost:5000";

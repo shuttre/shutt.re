@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -e
+
+# Replace the api base url
+
+docker run \
+	-e SHUTTRE_API_BASE_URL='https://api.shutt.re' \
+	--rm \
+	-p 80:80 \
+	shutt.re

@@ -1,4 +1,4 @@
-/* global spaConfigApiUrl */
+/* global shuttreApiBaseUrl */
 
 import Utils from "./Utils"
 import Oidc from "./Oidc";
@@ -22,13 +22,13 @@ class ShuttreApiClient {
     }
 
     apiUrl(pathAndQueryStr = "") {
-        let url = spaConfigApiUrl;
+        let url = shuttreApiBaseUrl;
         if (url == null ||
             pathAndQueryStr == null ||
             (pathAndQueryStr.length > 0 && !pathAndQueryStr.startsWith("/")))
         {
             throw new Error(
-                `apiUrl() failed. spaConfigApiUrl: "${spaConfigApiUrl}", pathAndQueryStr: "${pathAndQueryStr}"`
+                `apiUrl() failed. shuttreApiBaseUrl: "${shuttreApiBaseUrl}", pathAndQueryStr: "${pathAndQueryStr}"`
             );
         }
         return url + pathAndQueryStr;
